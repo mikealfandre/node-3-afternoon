@@ -4,7 +4,9 @@ const bodyParser = require('body-parser')
 const session = require('express-session')
 const checkForSession = require('./middlewares/checkForSession')
 const sc = require('./controllers/swag_controller')
-const ac = require('./controllers/auth.controller')
+const ac = require('./controllers/auth_controller')
+const cc = require('./controllers/cart_controller')
+const searchC = require('./controllers/search_controller')
 
 const app = express()
 
@@ -15,12 +17,19 @@ app.use(session({
     saveUninitialized: true
 }))
 app.use(checkForSession)
+app.use(express.static(`${__dirname}/../build`));
 
 app.get('/api/swag', sc.read)
 app.get('/api/user', ac.getUser)
 app.post('/api/login', ac.login)
 app.post('/api/register', ac.register)
 app.post('/api/signout', ac.signout)
+
+app.post('/api/cart', cc.add)
+app.post('/api/cart/checkout', cc.checkout)
+app.delete('/api/cart', cc.delete)
+
+app.get('/api/search', searchC.search)
 
 
 
